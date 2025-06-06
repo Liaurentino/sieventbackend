@@ -39,7 +39,7 @@ export const register = async (req, res)=> {
             from: process.env.SENDER_EMAIL,
             to: email,
             subject: 'Welcome to SiEvent',
-            text: Welcome to sievent website. your account has been created with email id: ${email}
+            text: `Welcome to sievent website. your account has been created with email id: ${email}`
         }
         
         // Try-catch untuk handling error pada pengiriman email
