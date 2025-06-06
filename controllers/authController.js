@@ -39,7 +39,7 @@ export const register = async (req, res)=> {
             from: process.env.SENDER_EMAIL,
             to: email,
             subject: 'Welcome to SiEvent',
-            text: `Welcome to sievent website. your account has been created with email id: ${email}`
+            text: Welcome to sievent website. your account has been created with email id: ${email}
         }
         
         // Try-catch untuk handling error pada pengiriman email
@@ -71,78 +71,87 @@ export const register = async (req, res)=> {
 export const login = async (req, res) => {
   const { email, password } = req.body;
 
+  // Validasi input
   if (!email || !password) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Email and password are required" });
+    return res.status(400).json({
+      success: false,
+      message: "Email dan password wajib diisi.",
+    });
   }
 
   try {
     const user = await userModel.findOne({ email });
 
     if (!user) {
-      return res
-        .status(401)
-        .json({ success: false, message: "Invalid email or password" });
+      return res.status(401).json({
+        success: false,
+        message: "Email atau password salah.",
+      });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return res
-        .status(401)
-        .json({ success: false, message: "Invalid email or password" });
+      return res.status(401).json({
+        success: false,
+        message: "Email atau password salah.",
+      });
     }
 
+    // Generate JWT
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
 
-    // Set cookie (sesuai dengan lingkungan)
+    // Set cookie
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: process.env.NODE_ENV === "production", // true di Vercel
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 hari
       path: "/",
     });
 
-    // Response sukses
+    // Respon sukses
     return res.status(200).json({
       success: true,
-      token: token, // fallback token
+      token, // fallback jika frontend tidak menerima cookie
       user: {
         _id: user._id,
         name: user.name,
         email: user.email,
         isAccountVerified: user.isAccountVerified,
+        isSiCreator: user.isSiCreator || false,
       },
     });
   } catch (error) {
     console.error("Login error:", error);
     return res.status(500).json({
       success: false,
-      message: "Internal server error",
+      message: "Terjadi kesalahan server saat login.",
     });
   }
 };
 
-export const logout = async (req, res)=> {
-    try {
-        res.clearCookie('token', {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Perubahan dari 'strict' ke 'lax'/'none'
-            path: '/' // Penting untuk memastikan cookie dihapus dengan benar
-        })
+export const logout = async (req, res) => {
+  try {
+    console.log("Clearing cookie for logout...");
 
-        return res.status(200).json({success: true, message: "Logged Out"})
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      path: '/'
+    });
 
-    } catch (error) {
-        console.error("Logout error:", error);
-        return res.status(500).json({success: false, message: error.message})
-    }
-}
+    return res.status(200).json({ success: true, message: "Logged Out" });
+
+  } catch (error) {
+    console.error("Logout error:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 
 export const sendVerifyOtp = async (req, res) => {
   const userId = req.user?.id; // ✅ id, bukan _id karena dari middleware
@@ -387,5 +396,5 @@ export const resetPassword = async (req, res)=> {
     } catch (error) {
         console.error("Reset password error:", error);
         return res.status(500).json({success: false, message: error.message})
-    }
+    }
 }
