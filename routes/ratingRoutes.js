@@ -60,7 +60,7 @@ const RatingRouter = express.Router();
  *       401:
  *         description: Unauthorized, token tidak valid
  */
-
+RatingRouter.post('/create/:eventId', userAuth, createRating); 
 /**
  * @swagger
  * /rating/readall/{eventId}:
@@ -94,7 +94,7 @@ const RatingRouter = express.Router();
  *                     type: string
  *                     format: date-time
  */
-
+RatingRouter.get('/readall/:eventId', getRatingsForEvent); 
 /**
  * @swagger
  * /rating/readone/user/{userId}/event/{eventId}:
@@ -131,7 +131,7 @@ const RatingRouter = express.Router();
  *       401:
  *         description: Unauthorized
  */
-
+RatingRouter.get('/readone/user/:userId/event/:eventId', userAuth, getUserRatingForEvent); 
 /**
  * @swagger
  * /rating/update/{id}:
@@ -168,7 +168,7 @@ const RatingRouter = express.Router();
  *       401:
  *         description: Unauthorized
  */
-
+RatingRouter.patch('/update/:id', userAuth, updateRating); 
 /**
  * @swagger
  * /rating/delete/{id}:
@@ -190,7 +190,7 @@ const RatingRouter = express.Router();
  *       401:
  *         description: Unauthorized
  */
-
+RatingRouter.delete('/delete/:id', userAuth, deleteRating); 
 /**
  * @swagger
  * /rating/readaverage/{eventId}:
@@ -217,5 +217,6 @@ const RatingRouter = express.Router();
  *                   format: float
  *                   description: Nilai rata-rata rating
  */
+RatingRouter.get('/readbyidrate/:ratingId', userAuth, getRatingById); 
 
 export default RatingRouter;

@@ -48,7 +48,7 @@ const ReportRouter = express.Router();
  *       401:
  *         description: Unauthorized
  */
-
+ReportRouter.post('/Creator/:Id', userAuth, reportCreator);
 /**
  * @swagger
  * /report/User/{Id}:
@@ -83,7 +83,7 @@ const ReportRouter = express.Router();
  *       401:
  *         description: Unauthorized (bukan creator)
  */
-
+ReportRouter.post('/User/:Id', userAuth, siCreatorOnly, reportUser);
 /**
  * @swagger
  * /report/ReadAll:
@@ -112,7 +112,7 @@ const ReportRouter = express.Router();
  *                     type: string
  *                     format: date-time
  */
-
+ReportRouter.get('/ReadAll', getAllReports);
 /**
  * @swagger
  * /report/Read/{id}:
@@ -148,7 +148,7 @@ const ReportRouter = express.Router();
  *       404:
  *         description: Laporan tidak ditemukan
  */
-
+ReportRouter.get('/Read/:id', getReportById);
 /**
  * @swagger
  * /report/Update/{id}:
@@ -185,7 +185,7 @@ const ReportRouter = express.Router();
  *       404:
  *         description: Laporan tidak ditemukan
  */
-
+ReportRouter.put('/Update/:id', userAuth, updateReport);
 /**
  * @swagger
  * /report/Delete/{id}:
@@ -209,5 +209,6 @@ const ReportRouter = express.Router();
  *       404:
  *         description: Laporan tidak ditemukan
  */
+ReportRouter.delete('/Delete/:id', userAuth, deleteReport);
 
 export default ReportRouter;
