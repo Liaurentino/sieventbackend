@@ -4,7 +4,7 @@ import Report from "../models/ReportModel.js";
 export const reportCreator = async (req, res, next) => {
   try {
     const reporterId = req.user.id;
-    const { Id } = req.params;
+    const { creatorId } = req.params;
     const { description } = req.body;
 
     const report = new Report({

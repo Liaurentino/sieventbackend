@@ -14,7 +14,7 @@ const ReportRouter = express.Router();
 
 /**
  * @swagger
- * /report/Creator/{Id}:
+ * /report/Creator/{creatorId}:
  *   post:
  *     summary: Membuat laporan untuk creator oleh user
  *     tags: [Reports]
@@ -48,10 +48,10 @@ const ReportRouter = express.Router();
  *       401:
  *         description: Unauthorized
  */
-ReportRouter.post('/Creator/:Id', userAuth, reportCreator);
+ReportRouter.post('/Creator/:creatorId', userAuth, reportCreator);
 /**
  * @swagger
- * /report/User/{Id}:
+ * /report/User/{userId}:
  *   post:
  *     summary: Membuat laporan untuk user oleh creator (hanya creator yang bisa)
  *     tags: [Reports]
@@ -83,7 +83,7 @@ ReportRouter.post('/Creator/:Id', userAuth, reportCreator);
  *       401:
  *         description: Unauthorized (bukan creator)
  */
-ReportRouter.post('/User/:Id', userAuth, siCreatorOnly, reportUser);
+ReportRouter.post('/User/:userId', userAuth, siCreatorOnly, reportUser);
 /**
  * @swagger
  * /report/ReadAll:
