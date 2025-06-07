@@ -5,13 +5,15 @@ import path from 'path';
 import jwt from 'jsonwebtoken';
 
 export const generateTicketPdf = async (ticket, outputPath) => {
+  // Cek dan buat direktori terlebih dahulu
+  const dir = path.dirname(outputPath);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+
   const doc = new PDFDocument();
   const stream = fs.createWriteStream(outputPath);
   doc.pipe(stream);
-
-  // Cek direktori
-  const dir = path.dirname(outputPath);
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 
   // Tambahkan informasi tiket
   doc.fontSize(20).text('E-Ticket', { align: 'center' });

@@ -8,7 +8,7 @@ import { generateLinkPdf } from "../utils/generateLinkpdf.js";
 
 const User = mongoose.model('User');
 
-// Untuk Event Secara offline Qr
+// ========== TIKET OFFLINE ==========
 export const sendTicketQr = async (req, res) => {
   try {
     const { ticketId } = req.params;
@@ -16,10 +16,6 @@ export const sendTicketQr = async (req, res) => {
     const ticket = await Ticket.findById(ticketId)
       .populate('event')
       .populate({ path: 'user', model: 'User' });
-    
-    if (ticket.event.type == "online") {
-      return res.status(400).json({ message: "Event bukan tipe offline" });
-    }
 
     if (!ticket || ticket.status !== 'paid') {
       return res.status(400).json({
@@ -28,12 +24,12 @@ export const sendTicketQr = async (req, res) => {
       });
     }
 
-    const ticketsDir = path.join(process.cwd(), 'tickets');
-    const pdfPath = path.join(ticketsDir, `${ticket._id}.pdf`);
-
-    if (!fs.existsSync(ticketsDir)) {
-      fs.mkdirSync(ticketsDir, { recursive: true });
+    if (ticket.event.type === "online") {
+      return res.status(400).json({ message: "Event bukan tipe offline" });
     }
+
+    // Simpan file sementara di direktori /tmp
+    const pdfPath = path.join('/tmp', `${ticket._id}.pdf`);
 
     await generateTicketPdf(ticket, pdfPath);
 
@@ -71,7 +67,7 @@ export const sendTicketQr = async (req, res) => {
   }
 };
 
-
+// ========== TIKET ONLINE ==========
 export const sendTicketOnline = async (req, res) => {
   try {
     const { ticketId } = req.params;
@@ -96,7 +92,8 @@ export const sendTicketOnline = async (req, res) => {
     const eventDate = new Date(ticket.event.date).toLocaleString("id-ID");
     const zoomLink = ticket.event.location;
 
-    const pdfPath = path.resolve(`./temp/ticket_${ticket._id}.pdf`);
+    // Simpan file sementara di direktori /tmp
+    const pdfPath = path.join('/tmp', `ticket_${ticket._id}.pdf`);
     await generateLinkPdf(ticket, pdfPath);
 
     const mailOptions = {
@@ -119,13 +116,18 @@ export const sendTicketOnline = async (req, res) => {
         console.warn("Gagal menghapus file PDF sementara:", err.message);
       }
     });
-     return res.status(200).json({
+
+    return res.status(200).json({
       success: true,
       message: 'Tiket berhasil dikirim ke email.',
     });
 
   } catch (error) {
     console.error("Gagal mengirim email e-ticket:", error.message);
-    throw error;
+    return res.status(500).json({
+      success: false,
+      message: "Terjadi kesalahan saat mengirim tiket.",
+      error: error.message,
+    });
   }
 };

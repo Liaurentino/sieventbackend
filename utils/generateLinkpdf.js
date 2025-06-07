@@ -3,15 +3,15 @@ import fs from 'fs';
 import path from 'path';
 
 export const generateLinkPdf = async (ticket, outputPath) => {
-  const doc = new PDFDocument();
-  const stream = fs.createWriteStream(outputPath);
-  doc.pipe(stream);
-
   // Pastikan direktori ada
   const dir = path.dirname(outputPath);
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
+
+  const doc = new PDFDocument();
+  const stream = fs.createWriteStream(outputPath);
+  doc.pipe(stream);
 
   // Header
   doc.fontSize(20).text('E-Ticket', { align: 'center' });
