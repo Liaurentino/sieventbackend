@@ -1,7 +1,7 @@
 import Ticket from '../models/ticketModel.js';
 
 export const verifyQrScan = async (req, res) => {
-  const { token } = req.body;
+  const { token } = req.params;
 
   if (!token) {
     return res.status(400).json({

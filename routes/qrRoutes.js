@@ -45,6 +45,6 @@ const qrRouter = express.Router();
  *       401:
  *         description: Unauthorized, token tidak valid atau tidak ada
  */
-qrRouter.get('/verify-qr', userAuth, verifyQrScan);
+qrRouter.get('/verify-qr/:token', userAuth, verifyQrScan);
 
 export default qrRouter;
