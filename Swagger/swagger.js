@@ -11,6 +11,8 @@ const options = {
       description: 'Dokumentasi REST API untuk platform pembelian tiket event',
     },
     servers: [{ url: process.env.BASE_URL || 'http://localhost:5000' , description: 'vercel' }],
+
+    servers: [{ url: process.env.NEXT_PUBLIC_APP_URL , description: 'vercel' }],
     components: {
       securitySchemes: {
         bearerAuth: {

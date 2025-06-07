@@ -2,7 +2,10 @@ import express from "express";
 import {
   getSiCreatorRequests,
   acceptSiCreatorRequest,
+  SeeRequestSiCreators,
 } from "../controllers/adminController.js";
+import upload from "../middleware/upload.js";
+import { isAuthenticated } from "../controllers/authController.js";
 
 const router = express.Router();
 
@@ -18,7 +21,7 @@ const router = express.Router();
  *       200:
  *         description: Berhasil mendapatkan daftar permintaan
  */
-router.get("/sicreator/requests", getSiCreatorRequests);
+router.post("/sicreator/requests", isAuthenticated, upload.single("ktp"), getSiCreatorRequests);
 
 /**
  * @swagger
@@ -40,5 +43,25 @@ router.get("/sicreator/requests", getSiCreatorRequests);
  *         description: Permintaan berhasil diterima
  */
 router.post("/sicreator/accept/:userId", acceptSiCreatorRequest);
+/**
+ * @swagger
+ * /sicreator/seerequests:
+ *   post:
+ *     summary: Melihat permintaan untuk menjadi Si Creator
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Melihat Permintaan dari User untuk Request Creator
+ *     responses:
+ *       200:
+ *         description: Permintaan berhasil diterima
+ */
+router.get("/sicreator/seerequests", SeeRequestSiCreators);
 
 export default router;

@@ -11,7 +11,10 @@ const userSchema = new mongoose.Schema({
   resetOtpExpireAt: { type: Number, default: 0 },
   isSiCreator: { type: Boolean, default: false },
   siCreatorRequest: { type: Boolean, default: false },
-});
+  ktpUrl: {  type: String },
+  institutionName: { type: String},
+
+}, { timestamps: true });
 
 const userModel = mongoose.models.user || mongoose.model('User', userSchema);
 
